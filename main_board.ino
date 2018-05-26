@@ -1227,15 +1227,39 @@ NIL_THREAD(ZoneThread, arg) {
         } else {
           if ((conf.zone[i] >> 15) & B1){        // Digital 0/ Analog 1 
             nilSemWait(&ADCSem);          // Wait for slot
-            val = nilAnalogRead(i);
+            val = nilAnalogRead(i % 8);
+
+            // use resistors: 390R + 390R for tamper, 820R for zone 1, 1K6 for zone 2
+            // see https://i.imgur.com/5VswtOH.png
+            switch((int16_t)(val)) {
+              case 0 ... 229:
+                val = 0; // tamper, [0..662] ohms
+                break;
+              case 230 ... 338:
+                val = ALR_OK; // ok, [663..1027] ohms
+                break;
+              case 339 ... 583:
+                val = i < 8 ? ALR_PIR : ALR_OK; // zone 1 alarm, [1028..1850] ohms
+                break;
+              case 584 ... 721:
+                val = i < 8 ? ALR_OK : ALR_PIR; // zone 2 alarm, [1851..2399] ohms
+                break;
+              case 722 ... 1022:
+                val = ALR_PIR; // zone 1 + zone 2 alarm, [2400..] ohms
+                break;
+              case 1023:
+                // tamper, infinity ohms
+                break;
+            }
+            
             nilSemSignal(&ADCSem);        // Exit region.
           } else {
             switch(i) {
-              case 8:  pinIN1.read() ? val = ALR_PIR : val = ALR_OK; break;
-              case 9:  pinIN2.read() ? val = ALR_PIR : val = ALR_OK; break;
-              case 10: pinIN3.read() ? val = ALR_PIR : val = ALR_OK; break;
-              case 11: pinIN4.read() ? val = ALR_PIR : val = ALR_OK; break;
-              case 12: pinIN5.read() ? val = ALR_PIR : val = ALR_OK; break;
+              case 16: pinIN1.read() ? val = ALR_PIR : val = ALR_OK; break;
+              case 17: pinIN2.read() ? val = ALR_PIR : val = ALR_OK; break;
+              case 18: pinIN3.read() ? val = ALR_PIR : val = ALR_OK; break;
+              case 19: pinIN4.read() ? val = ALR_PIR : val = ALR_OK; break;
+              case 20: pinIN5.read() ? val = ALR_PIR : val = ALR_OK; break;
               default: break;
             } 
           }

@@ -2,7 +2,7 @@
 #define defaults_h
 
 #define ALR_ZONES      50        // Active zones
-#define HW_ZONES       13        // Last hardware zone index in array
+#define HW_ZONES       21        // Last hardware zone index in array
 #define NUM_OF_KEYS    20        // max number of keys
 #define KEY_LEN        8         // key 
 #define NUM_OF_PHONES  10        // max number of phones
@@ -121,13 +121,13 @@ void setDefault(){
       //                 ||||||||         ||||||||-  Enabled   
       //                 54321098         76543210
     switch(i){
-      case  0 ...  7: 
+      case  0 ...  15: 
          conf.zone[i] = B11000000 << 8 | B00011110; // Analog sensor
         break;
-      case  8 ... 11:
+      case  16 ... 19:
          conf.zone[i] = B01000000 << 8 | B00011110; // Digital sensor 
         break;
-      case  12      :
+      case  20      :
          conf.zone[i] = B01000010 << 8 | B00011110; // Tamper
         break;
       default: 
