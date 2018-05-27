@@ -1229,6 +1229,7 @@ NIL_THREAD(ZoneThread, arg) {
             nilSemWait(&ADCSem);          // Wait for slot
             val = nilAnalogRead(i % 8);
 
+            conf.values[i] = val;
             // use resistors: 390R + 390R for tamper, 820R for zone 1, 1K6 for zone 2
             // see https://i.imgur.com/5VswtOH.png
             switch((int16_t)(val)) {

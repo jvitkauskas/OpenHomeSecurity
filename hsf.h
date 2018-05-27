@@ -943,6 +943,9 @@ void webSetZone(WebServer &server, WebServer::ConnectionType type, char *url_tai
                 case 'N': server.printP(text_i_starting); break;
                 default: server.printP(text_tamper); break;
               }
+              char buf[5] = { 0 };
+              sprintf(buf, "%04i", conf.values[i]);
+              server.print(buf);
             } else { server.printP(text_i_disabled); } // disabled
             server.printP(html_e_td_e_tr);
           } // Zone is connected

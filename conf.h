@@ -79,6 +79,7 @@ struct config_t {
   uint8_t  time_dst_hour;      //0-23
   int16_t  time_dst_offset;    //offset from UTC in minutes
   uint8_t  zone_address[ALR_ZONES-HW_ZONES];  // remote zone address
+  uint16_t values[ALR_ZONES];
 } conf;
 
 void setDefault(){
